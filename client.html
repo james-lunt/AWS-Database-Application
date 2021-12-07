@@ -1,0 +1,52 @@
+<!--James Lunt 18323467-->
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<div id="app-6">
+    James Lunt
+    18323467
+    <br>
+    <button v-on:click="create">Create Database</button>
+    <button v-on:click="destroy">Destroy Database</button>
+    <br>
+    <input v-model="Year"> Year </input>
+    <br>
+    <input v-model="String"> Title </input>
+    <br>
+    <input v-model="Rating"> Rating </input>
+<br>
+    <button v-on:click="query">Query Database</button>
+</div>
+<script>
+    var app6 = new Vue({
+        el: '#app-6',
+        data: {
+            Year: "",
+            Rating: null,
+            String: "",
+        },
+        methods: {
+            create: async function () {
+                response = await fetch("create/")
+                //console.log(await response.json())
+            },
+            query: async function () {
+                console.log(this.Year)
+                console.log(this.Rating)
+                console.log(this.String)
+               // response = await fetch("query/" + this.Year + "/" + this.String + "/" + this.Rating)
+               response = await fetch("query/" + this.Year + "/" + this.String + "/" + this.Rating)
+               filtered_movies = await response.json()
+               console.log(filtered_movies)
+                //console.log(await response.json())
+            },
+            destroy: async function () {
+                response = await fetch("destroy/")
+                //console.log(await response.json())
+            },
+        },
+    })
+</script>
+
+</html>
