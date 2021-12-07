@@ -21,7 +21,7 @@ var dynamodb = new AWS.DynamoDB();
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 
-async function create_table() {
+async function create_table(req,res) {
     try {
         AWS.config.setPromisesDependency();
         const s3 = new AWS.S3();
@@ -40,18 +40,18 @@ async function create_table() {
             AttributeDefinitions: [
                 { AttributeName: "year", AttributeType: "N" },
                 { AttributeName: "title", AttributeType: "S" },
-                { AttributeName: "rating", AttributeType: "N" },
-                { AttributeName: "rank", AttributeType: "S" },
-                { AttributeName: "release_date", AttributeType: "S" }
+               // { AttributeName: "rating", AttributeType: "N" },
+                //{ AttributeName: "rank", AttributeType: "S" },
+                //{ AttributeName: "release_date", AttributeType: "S" }
             ],
             ProvisionedThroughput: {
-                ReadCapacityUnits: 5,
-                WriteCapacityUnits: 5
+                ReadCapacityUnits: 10,
+                WriteCapacityUnits: 10
             }
         };
         dynamodb.createTable(params, function (err, data) {
             if (err) {
-                console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+               console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
             } else {
                 console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
             }
@@ -81,15 +81,13 @@ async function create_table() {
     } catch (e) {
         console.log('our erro', e);
     }
-    res.send("Created")
 }
 
 
-async function destroy_table(res) {
+async function destroy_table(req, res) {
     var params = {
         TableName: "Movies"
     };
-
     dynamodb.deleteTable(params, function (err, data) {
         if (err) {
             console.error("Unable to delete table. Error JSON:", JSON.stringify(err, null, 2));
@@ -97,7 +95,7 @@ async function destroy_table(res) {
             console.log("Deleted table. Table description JSON:", JSON.stringify(data, null, 2));
         }
     });
-    res.send("Deleted")
+    console.log("Table Deleted")
 }
 
 async function query_table(req, res) {
@@ -120,12 +118,10 @@ async function query_table(req, res) {
     console.log("Scanning Movies table.");
     docClient.scan(params, onScan);
     
-    //make json array
-    var return_movies = [
-        //movies: []
-    ];
-
     function onScan(err, data) {
+        //make json array
+        var return_movies = [];
+
         if (err) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
@@ -150,7 +146,7 @@ async function query_table(req, res) {
                 docClient.scan(params, onScan);
             }
         }
+        console.log("Movies Queried")
+        res.send(return_movies)
     }
-    console.log(return_movies)
-    res.send(return_movies)
 }

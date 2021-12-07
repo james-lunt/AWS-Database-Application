@@ -10,40 +10,49 @@
     <button v-on:click="create">Create Database</button>
     <button v-on:click="destroy">Destroy Database</button>
     <br>
-    <input v-model="Year"> Year </input>
+    <input v-model="QYear"> Year </input>
     <br>
-    <input v-model="String"> Title </input>
+    <input v-model="QString"> Title </input>
     <br>
-    <input v-model="Rating"> Rating </input>
+    <input v-model="QRating"> Rating </input>
 <br>
     <button v-on:click="query">Query Database</button>
+<br>
+     {{status}}
+<br>
+
+    <li v-for="movie in movies">
+      {{ movie.title }} {{movie.year}} {{movie.rating}}
+    </li>
 </div>
 <script>
     var app6 = new Vue({
         el: '#app-6',
         data: {
-            Year: "",
-            Rating: null,
-            String: "",
+            //query data
+            QYear: "",
+            QRating: null,
+            QString: "",
+            //response data
+            movies: [],
         },
         methods: {
             create: async function () {
                 response = await fetch("create/")
-                //console.log(await response.json())
             },
             query: async function () {
                 console.log(this.Year)
                 console.log(this.Rating)
                 console.log(this.String)
-               // response = await fetch("query/" + this.Year + "/" + this.String + "/" + this.Rating)
-               response = await fetch("query/" + this.Year + "/" + this.String + "/" + this.Rating)
+               response = await fetch("query/" + this.QYear + "/" + this.QString + "/" + this.QRating)
                filtered_movies = await response.json()
                console.log(filtered_movies)
-                //console.log(await response.json())
+               this.movies = filtered_movies;
+               //console.log(filtered_movies)
             },
             destroy: async function () {
                 response = await fetch("destroy/")
-                //console.log(await response.json())
+
             },
         },
     })
